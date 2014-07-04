@@ -12,10 +12,10 @@
     return hashParams;
   }
   
-  const params = getHashParams();
-
-  var accessToken = params.accessToken
-      refreshToken = params.refreshToken;
+  var params = getHashParams(),
+      accessToken = params.accessToken,
+      refreshToken = params.refreshToken,
+      userId = null;
   
   if (!accessToken) {
     $('#login').show();
@@ -31,52 +31,48 @@
       tracksTemplate = Handlebars.compile(tracksTemplateSource);
 
   $.spotify('set-access-token', { accessToken: accessToken });
-
-  $.spotify('get-playlists', {
-    onSuccess: function(playlists) {
-      playlistsContainer.innerHTML = playlistsTemplate({ playlists: playlists });
+  
+  $.spotify('get-current-user-info', {
+    onSuccess: function(userInfo) {
+      userId = userInfo.id;
       
-      $('a.show-tracks-link').click(function(event) {
-        event.preventDefault();
-        
-        var playlistId = $(this).attr('href');
-        console.log(playlistId);
+      $.spotify('get-playlists', {
+        userId: userId,
+        onSuccess: function(playlists) {
+          playlistsContainer.innerHTML = playlistsTemplate({ playlists: playlists });
+          
+          $('a.show-tracks-link').click(function(event) {
+            event.preventDefault();
+            
+            var playlistId = $(this).attr('href');
+            // TODO: Retrieve and show tracks
+          });
+          
+          $('a.export-link').click(function() {
+            event.preventDefault();
+            
+            var playlistId = $(this).attr('href');
+            
+            $.spotify('export-playlist', {
+              userId: userId,
+              playlistId: playlistId,
+              onSuccess: function(playlist) {
+                var href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(playlist)),
+                    link = document.createElement('a');
+                
+                link.setAttribute('href', href);
+                link.setAttribute('download', playlist.id + '_' + playlist.name.replace(/\s+/, '') + '.json');
+                link.click();
+              }
+            });
+          });
+        }
       });
-      
-      $('a.export-link').click(function() {
-        event.preventDefault();
-        
-        var playlistId = $(this).attr('href');
-        
-        $.spotify('export-playlist', { playlistId: playlistId });
-      });
-
-//      $('a.playlist-expander').click(function() {
-//        var ref = $(this);
-//
-//        $.spotify('get-playlist-tracks', {
-//          href: $(this).attr('href'),
-//          onSuccess: function(tracks) {
-//            ref.parent().append(playlistTracksTemplate({ tracks: tracks }));
-//            console.log(tracks);
-//            console.log(playlistTracksTemplate({ tracks: tracks }));
-//          },
-//          onError: function(jqXHR, textStatus, errorThrown) {
-//            console.log(errorThrown);
-//          }
-//        });
-//
-//        return false;
-//      });
-    },
-    onError: function(jqXHR, textStatus, errorThrown) {
-      console.log(errorThrown);
     }
   });
 
   $('#login').hide();
   $('#loggedin').show();
-
 
 //  document.getElementById('obtain-new-token').addEventListener('click', function() {
 //    $.ajax({
