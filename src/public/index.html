@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Playmate - Your Online Playlist Companion</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Playmate <small>Playlist Organization Made Easy</small></h1>
+      </div>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Playlists</h3>
+        </div>
+        <div class="panel-body">
+          <div id="login">
+            <a href="/login" class="btn btn-primary">Log in to Spotify</a>
+          </div>
+          <ul id="playlists" class="list-group"></ul>
+        </div>
+      </div>
+    </div>
+
+    <script id="playlists-template" type="text/x-handlebars-template">
+      {{#each playlists}}
+        <li class="list-group-item">
+          <strong>{{this.name}}</strong>
+          <span class="badge">{{this.tracks.total}}</span>
+          <br/>
+          <a href="{{this.id}}" class="show-tracks-link">Show Tracks</a> |
+          <a href="{{this.id}}" class="export-link">Export</a>
+        </li>
+      {{/each}}
+    </script>
+
+    <script id="tracks-template" type="text/x-handlebars-template">
+      <ul>
+        {{#each tracks}}
+          <li>
+            <dl class="dl-horizontal">
+              <dt>Name</dt>
+              <dd>{{this.track.name}}</dd>
+            </dl>
+          </li>
+        {{/each}}
+      </ul>
+    </script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
+    
+    <script src="js/spotify.js"></script>
+    <script src="js/main.js"></script>
+</html>
