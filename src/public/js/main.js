@@ -47,7 +47,6 @@
         event.preventDefault();
         
         var playlistId = $(this).attr('href');
-        console.log(playlistId);
         
         $.spotify('export-playlist', { playlistId: playlistId });
       });

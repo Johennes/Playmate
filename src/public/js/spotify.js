@@ -20,8 +20,8 @@
         return getPlaylists(opts);
       case 'get-playlist-tracks':
         return getPlaylistTracks(opts);
-      case 'download-playlist':
-        return downloadPlaylist(opts);
+      case 'export-playlist':
+        return exportPlaylist(opts);
     }
   };
 
@@ -98,6 +98,42 @@
       }
     });
   }
+  
+  // Retrieves a specific playlist
+  function getPlaylist(opts) {
+    if (!userId) {
+      getUserId(function() {
+        getPlaylist(opts);
+      });
+      return;
+    }
+
+    opts = $.extend({
+      playlistId: null,
+      onSuccess: function(playlist) {},
+      onError: function(jqXHR, textStatus, errorThrown) {}
+    }, opts);
+    
+    triggerRequest('/users/' + userId + '/playlists/' + opts.playlistId, function(data, textStatus, jqXHR) {
+      var playlist = data;
+      var tracks = playlist.tracks.items;
+      
+      if (! playlist.tracks.next) {
+        playlist.tracks = tracks;
+        opts.onSuccess(playlist);
+        return;
+      }
+      
+      triggerRequestForPagedItems(playlist.tracks.next, function(items) {
+        for (var i = 0; i < items.length; ++i) {
+          tracks.push(items[i]);
+        }
+        
+        playlist.tracks = tracks;
+        opts.onSuccess(playlist);
+      }, opts.onError);
+    }, opts.onError);
+  }
 
   // Retrieves all playlists
   function getPlaylists(opts) {
@@ -135,8 +171,8 @@
     triggerRequestForPagedItems((opts.href) ? opts.href : '/users/' + userId + '/playlists/' + opts.playlistId + '/tracks', opts.onSuccess, opts.onError);
   }
   
-  // Downloads a playlist
-  function downloadPlaylist(opts) {
+  // Exports a playlist and its tracks to JSON
+  function exportPlaylist(opts) {
     if (!userId) {
       getUserId(function() {
         downloadPlaylist(opts);
@@ -150,11 +186,14 @@
       onError: function(jqXHR, textStatus, errorThrown) {}
     }, opts);
     
-    getPlayListTracks({
+    getPlaylist({
       playlistId: opts.playlistId,
-      onSuccess: function(tracks) {
-        var uri = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(tracks));
-        window.open(uri);
+      onSuccess: function(playlist) {
+        var href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(playlist));
+        var link = document.createElement('a');
+        link.setAttribute('href', href);
+        link.setAttribute('download', playlist.id + '.json');
+        link.click();
       },
       onError: opts.onError
     });
