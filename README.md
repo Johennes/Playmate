@@ -47,4 +47,4 @@ module.exports.REDIRECT_URI  = 'http://localhost:8880/callback';
 
 ### Screenshots
 
-![Playmate](screenshots/2014-07-25.png)
+![Main interface](screenshots/main-interface.png)
