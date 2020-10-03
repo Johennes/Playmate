@@ -1,7 +1,7 @@
 Playmate
 ========
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+*Mirrors: [GitHub] ~ [GitLab]*
 
 Your online playlist companion
 
@@ -48,3 +48,6 @@ module.exports.REDIRECT_URI  = 'http://localhost:8880/callback';
 ### Screenshots
 
 ![Main interface](screenshots/main-interface.png)
+
+[GitHub]: https://github.com/Johennes/Playmate
+[GitLab]: https://gitlab.com/cherrypicker/Playmate
