@@ -1,8 +1,6 @@
 Playmate
 ========
 
-*Mirrors: [GitHub] ~ [GitLab]*
-
 Your online playlist companion
 
 This is intended to be a tool for synchronizing playlists across
@@ -48,6 +46,3 @@ module.exports.REDIRECT_URI  = 'http://localhost:8880/callback';
 ### Screenshots
 
 ![Main interface](screenshots/main-interface.png)
-
-[GitHub]: https://github.com/Johennes/Playmate
-[GitLab]: https://gitlab.com/cherrypicker/Playmate
